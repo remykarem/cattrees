@@ -16,7 +16,7 @@ y = np.array([0, 1, 1, 0, 0, 1, 1, 2, 2])
 Import module
 
 ```python
-from decision_tree import DecisionTreeClassifier
+from trees_and_forests import DecisionTreeClassifier
 ```
 
 Initialise and fit data

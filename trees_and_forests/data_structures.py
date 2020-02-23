@@ -1,4 +1,3 @@
-import ipdb
 import numpy as np
 from .utils import *
 from .exceptions import NotEvaluatedError, NotSupposedToHappenError
@@ -207,9 +206,6 @@ class TreeNode:
             right_indices = best_feature > self.qn
         left_X_y = features[left_indices], y[left_indices]
         right_X_y = features[right_indices], y[right_indices]
-
-        # if left_X_y[0].shape[0] == 0 or right_X_y[0].shape[0] == 0:
-        #     ipdb.set_trace()
 
         self.evaluated = True
 

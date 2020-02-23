@@ -1,5 +1,5 @@
 import numpy as np
-from ._tree import plant_tree
+from .tree import plant_tree
 
 X = np.array([
     [1, 101, 103, 3, 5, 107, 109, 7, 8],
