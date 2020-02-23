@@ -39,3 +39,9 @@ clf.predict(np.array([[1,1,0]]))
 - [ ] Boosted trees 😍
 - [ ] Performance against scikit-learn
 - [ ] API design document
+- [ ] Visualisation
+- [ ] Notebook for walkthrough at every decision
+
+## 3. Related
+
+https://scikit-learn.org/stable/modules/tree.html
