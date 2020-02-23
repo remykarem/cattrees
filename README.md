@@ -1,6 +1,6 @@
 # Trees and forests from scratch
 
-## Usage
+## 1. Usage
 
 Prepare data. Here there are 3 features: the first 2 are numerical and the last is nominal.
 
@@ -31,3 +31,11 @@ Inference
 ```python
 clf.predict(np.array([[1,1,0]]))
 ```
+
+## 2. Would-like-to-do-but-not-sure-when's
+
+- [ ] Cythonise/PyTorchify
+- [ ] Unit tests
+- [ ] Boosted trees 😍
+- [ ] Performance against scikit-learn
+- [ ] API design document
