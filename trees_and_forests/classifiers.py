@@ -1,5 +1,6 @@
 import numpy as np
 from .tree import plant_tree
+from .data_structures import ClassificationTreeNode
 import ipdb
 
 X = np.array([
@@ -15,7 +16,7 @@ class DecisionTreeClassifier:
 
     def fit(self, X, y, categorical=[2]):
         """Build a decision tree to fit X and y"""
-        self.tree = plant_tree(X, y)
+        self.tree = plant_tree(ClassificationTreeNode, X, y)
 
     def predict(self, X):
         return self.tree(X)
@@ -30,7 +31,10 @@ class RandomForestClassifier:
         n_rows = X.shape[0]
         self.trees = [
             plant_tree(
-                X[get_bootstrap_sample_indices(n_rows), :], y, features_to_select="sqrt")
+                Node=ClassificationTreeNode,
+                X=X[get_bootstrap_sample_indices(n_rows), :], 
+                y=y,
+                features_to_select="sqrt")
             for i in range(self.n_trees)]
 
     def predict(self, X):

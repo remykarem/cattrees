@@ -3,6 +3,8 @@ import numpy as np
 from .utils import *
 from .exceptions import NotEvaluatedError, NotSupposedToHappenError
 
+
+
 class TreeNode:
     """Decision tree node
 
@@ -61,6 +63,96 @@ class TreeNode:
                 f" Left: {self._left}\n" + \
                 f"Right: {self._right}\n\n" + \
                 f" Pred: {self._pred}\n"
+
+    def split(self, max_depth, features_to_select, splits_to_select):
+        pass
+
+    @property
+    def is_branch(self):
+        """The `self.pred` value determines if node is branch"""
+        if self.evaluated:
+            return self.pred is None
+        else:
+            raise NotEvaluatedError
+
+    @property
+    def is_leaf(self):
+        """The `self.pred` value determines if node is leaf"""
+        if self.evaluated:
+            return not self.is_branch
+        else:
+            raise NotEvaluatedError
+
+    @property
+    def _qn(self):
+        """Internal property method used for representing object"""
+        if self.qn is None:
+            return ""
+        else:
+            return f"Is X <= {self.qn}?"
+
+    @property
+    def _left(self):
+        """Internal property method used for representing object"""
+        if isinstance(self.pred, int):
+            return "-"
+        elif self.left is None:
+            return "?"
+        elif self.left.evaluated is False:
+            return "?"
+        elif self.left.is_leaf:
+            return "(leaf)"
+        else:
+            return "(branch)"
+
+    @property
+    def _right(self):
+        """Internal property method used for representing object"""
+        if isinstance(self.pred, int):
+            return "-"
+        elif self.right is None:
+            return "?"
+        elif self.right.evaluated is False:
+            return "?"
+        elif self.right.is_leaf:
+            return "(leaf)"
+        else:
+            return "(branch)"
+
+    @property
+    def _pred(self):
+        """Internal property method used for representing object"""
+        if self.pred is None:
+            return "-"
+        else:
+            return self.pred
+
+
+class RegressionTreeNode(TreeNode):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def split(self, max_depth, features_to_select, splits_to_select):
+        features, y = next(self.data)
+        if features.ndim == 1:
+            features = features[:, None]
+
+        # Conditions to not split
+        # must provide prediction value
+        if len(np.unique(y)) == 1:
+            self.pred = np.unique(y)[0]
+            self.evaluated = True
+            return None, None
+        elif self.depth == max_depth:
+            self.pred = np.argmax(np.bincount(y))
+            self.evaluated = True
+            return None, None
+        elif self.depth > max_depth:
+            raise NotSupposedToHappenError
+
+class ClassificationTreeNode(TreeNode):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def split(self, max_depth, features_to_select, splits_to_select):
         """
@@ -212,66 +304,6 @@ class TreeNode:
 
         return left_X_y, right_X_y
 
-    @property
-    def is_branch(self):
-        """The `self.pred` value determines if node is branch"""
-        if self.evaluated:
-            return self.pred is None
-        else:
-            raise NotEvaluatedError
-
-    @property
-    def is_leaf(self):
-        """The `self.pred` value determines if node is leaf"""
-        if self.evaluated:
-            return not self.is_branch
-        else:
-            raise NotEvaluatedError
-
-    @property
-    def _qn(self):
-        """Internal property method used for representing object"""
-        if self.qn is None:
-            return ""
-        else:
-            return f"Is X <= {self.qn}?"
-
-    @property
-    def _left(self):
-        """Internal property method used for representing object"""
-        if isinstance(self.pred, int):
-            return "-"
-        elif self.left is None:
-            return "?"
-        elif self.left.evaluated is False:
-            return "?"
-        elif self.left.is_leaf:
-            return "(leaf)"
-        else:
-            return "(branch)"
-
-    @property
-    def _right(self):
-        """Internal property method used for representing object"""
-        if isinstance(self.pred, int):
-            return "-"
-        elif self.right is None:
-            return "?"
-        elif self.right.evaluated is False:
-            return "?"
-        elif self.right.is_leaf:
-            return "(leaf)"
-        else:
-            return "(branch)"
-
-    @property
-    def _pred(self):
-        """Internal property method used for representing object"""
-        if self.pred is None:
-            return "-"
-        else:
-            return self.pred
-
 
 class Stack:
     def __init__(self):
@@ -292,5 +324,3 @@ class Stack:
     @property
     def is_not_empty(self):
         return len(self.data) > 0
-
-

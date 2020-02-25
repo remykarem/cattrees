@@ -1,7 +1,7 @@
-from .data_structures import Stack, TreeNode
+from .data_structures import Stack
 
 
-def plant_tree(X, y,
+def plant_tree(Node, X, y,
                max_depth=3,
                features_to_select="all",
                splits_to_select="all"):
@@ -12,6 +12,8 @@ def plant_tree(X, y,
 
     Params
     ------
+    Node: class
+        ClassificationTreeNode or RegressionTreeNode
     max_depth: int
         Depth of tree to grow. 0 indicates there's only the
         root node. -1 indicates growing tree uncontrollably.
@@ -27,7 +29,7 @@ def plant_tree(X, y,
     stack = Stack()
 
     idx = 0
-    root = TreeNode(data=(X, y), idx=idx, depth=0)
+    root = Node(data=(X, y), idx=idx, depth=0)
     stack.push(root)
 
     while stack.is_not_empty:
@@ -39,9 +41,9 @@ def plant_tree(X, y,
         if node.is_branch:
 
             idx += 1
-            node_left = TreeNode(data=data_left, idx=idx, depth=node.depth+1)
+            node_left = Node(data=data_left, idx=idx, depth=node.depth+1)
             idx += 1
-            node_right = TreeNode(data=data_right, idx=idx, depth=node.depth+1)
+            node_right = Node(data=data_right, idx=idx, depth=node.depth+1)
 
             node.left = node_left
             node.right = node_right
