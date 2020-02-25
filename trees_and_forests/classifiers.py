@@ -1,5 +1,6 @@
 import numpy as np
 from .tree import plant_tree
+import ipdb
 
 X = np.array([
     [1, 101, 103, 3, 5, 107, 109, 7, 8],
@@ -21,16 +22,24 @@ class DecisionTreeClassifier:
 
 
 class RandomForestClassifier:
-    def __init__(self, n_trees=10):
+    def __init__(self, n_trees=10, bootstrap_samples=True):
         self.n_trees = n_trees
         self.trees = None
 
     def fit(self, X, y, categorical=[2]):
-        """Build a decision tree to fit X and y"""
-        self.trees = [plant_tree(X, y, features_to_select="sqrt")
-                      for i in range(self.n_trees)]
+        n_rows = X.shape[0]
+        self.trees = [
+            plant_tree(
+                X[get_bootstrap_sample_indices(n_rows), :], y, features_to_select="sqrt")
+            for i in range(self.n_trees)]
 
     def predict(self, X):
         preds = np.array([tree(X) for tree in self.trees])
         max_voting = np.argmax(np.bincount(preds))
         return max_voting
+
+
+def get_bootstrap_sample_indices(n_rows):
+    PROPORTION = 2/3
+    final_size = min(1, int(PROPORTION*n_rows))
+    return np.random.choice(n_rows, size=final_size, replace=True)
