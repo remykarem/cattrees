@@ -41,6 +41,7 @@ Inference
 - [ ] API design document
 - [ ] Visualisation
 - [ ] Notebook for walkthrough at every decision
+- [ ] Probabilities
 
 ## 3. Related
 
