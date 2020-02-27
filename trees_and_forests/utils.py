@@ -1,7 +1,8 @@
 import numpy as np
 
-__all__ = ["select_features", "select_split_indices", "calculate_gini",
-           "calculate_gini_initial", "gen"]
+__all__ = ["select_features", "select_split_indices", "calculate_criterion",
+           "calculate_criterion_2", "calculate_criterion_initial",
+           "calculate_criterion_initial_2", "gen"]
 
 
 def select_features(n_features, method="all"):
@@ -22,7 +23,7 @@ def select_split_indices(n_unique_samples, method):
         return list(np.sort(np.random.choice(n_features, method, replace=False)))
 
 
-def calculate_gini(left, right, n_classes):
+def calculate_criterion(left, right, n_classes):
     # `probas`:
     #
     #          probas_left  probas_right
@@ -40,10 +41,22 @@ def calculate_gini(left, right, n_classes):
     return gini
 
 
-def calculate_gini_initial(y):
+def calculate_criterion_2(left, right):
+    sse_left = ((left-left.mean())**2).sum(keepdims=True)
+    sse_right = ((right-right.mean())**2).sum(keepdims=True)
+    sse = sse_left + sse_right
+
+    return sse
+
+
+def calculate_criterion_initial(y):
     proportion = np.bincount(y)/len(y)
     gini_initial = np.sum(proportion*(1-proportion))
     return gini_initial
+
+
+def calculate_criterion_initial_2(y):
+    return np.mean(y)
 
 
 def gen(a, b):
