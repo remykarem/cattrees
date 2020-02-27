@@ -229,7 +229,10 @@ class ClassificationTreeNode(TreeNode):
                         len(left)/len(feature),
                         1-len(left)/len(feature)])
                     weighted_gini = np.sum(weights * gini)
+                    # TODO Vectorise this
                     gini_gain = gini_initial - weighted_gini
+
+                    if gini_gain < 0:
 
                     gini_gains_for_one_feature.append(gini_gain)
                     print(left, right)
@@ -282,6 +285,12 @@ class ClassificationTreeNode(TreeNode):
             f"Best gini gain from every feature:\n{best_gain_from_every_feature}")
         print(
             f"Best split/category from every feature:\n{best_xxx_from_every_feature}")
+
+        # No useful splits
+        if np.max(best_gain_from_every_feature) < 0.05:
+            self.pred = np.argmax(np.bincount(y))
+            self.evaluated = True
+            return None, None
 
         self.col = np.argmax(best_gain_from_every_feature)
         self.qn = best_xxx_from_every_feature[self.col]
