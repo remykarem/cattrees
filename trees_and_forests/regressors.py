@@ -3,7 +3,7 @@ from .tree import plant_tree
 from .data_structures import RegressionTreeNode
 import ipdb
 
-__all__ = ["RegressionTreeNode"]
+__all__ = ["DecisionTreeRegressor"]
 
 X = np.array([
     [1, 101, 103, 3, 5, 107, 109, 7, 8],
@@ -12,7 +12,7 @@ X = np.array([
 y = np.array([13, 30, 22, 31, 16, 19, 18, 27, 15])
 
 
-class RegressionTreeClassifier:
+class DecisionTreeRegressor:
     def __init__(self):
         self.tree = None
 
