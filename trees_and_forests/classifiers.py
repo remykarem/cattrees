@@ -32,7 +32,7 @@ class RandomForestClassifier:
         self.trees = [
             plant_tree(
                 Node=ClassificationTreeNode,
-                X=X[get_bootstrap_sample_indices(n_rows), :], 
+                X=X[get_bootstrap_sample_indices(n_rows), :],
                 y=y,
                 features_to_select="sqrt")
             for i in range(self.n_trees)]
