@@ -11,30 +11,53 @@ y = np.array([0, 1, 1, 0, 0, 1, 1, 2, 2])
 
 
 class DecisionTreeClassifier:
-    def __init__(self):
+    def __init__(self,
+                 max_depth=3,
+                 features_to_select="all",
+                 splits_to_select="all"):
         self.tree = None
+        self.max_depth = max_depth
+        self.splits_to_select = splits_to_select
+        self.features_to_select = features_to_select
 
     def fit(self, X, y, categorical=[2]):
-        """Build a decision tree to fit X and y"""
-        self.tree = plant_tree(ClassificationTreeNode, X, y)
+        self.tree = plant_tree(
+            Node=ClassificationTreeNode,
+            X=X,
+            y=y,
+            categorical=categorical,
+            max_depth=self.max_depth,
+            features_to_select=self.features_to_select
+            splits_to_select=self.splits_to_select)
 
     def predict(self, X):
         return self.tree(X)
 
 
 class RandomForestClassifier:
-    def __init__(self, n_trees=10, bootstrap_samples=True):
-        self.n_trees = n_trees
+    def __init__(self,
+                 n_trees=10,
+                 bootstrap_samples=True,
+                 max_depth=3,
+                 features_to_select="sqrt",
+                 splits_to_select="all"):
         self.trees = None
+        self.n_trees = n_trees
+        self.max_depth = max_depth
+        self.splits_to_select = splits_to_select
+        self.features_to_select = features_to_select
 
     def fit(self, X, y, categorical=[2]):
-        n_rows = X.shape[0]
+        n_samples = X.shape[0]
         self.trees = [
             plant_tree(
                 Node=ClassificationTreeNode,
-                X=X[get_bootstrap_sample_indices(n_rows), :],
+                X=X[get_bootstrap_sample_indices(n_samples), :],
                 y=y,
-                features_to_select="sqrt")
+                categorical=categorical,
+                max_depth=self.max_depth,
+                features_to_select=self.features_to_select,
+                splits_to_select=self.splits_to_select)
             for i in range(self.n_trees)]
 
     def predict(self, X):

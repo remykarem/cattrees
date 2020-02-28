@@ -23,40 +23,40 @@ def select_split_indices(n_unique_samples, method):
         return list(np.sort(np.random.choice(n_features, method, replace=False)))
 
 
-def calculate_criterion(left, right, n_classes):
-    # `probas`:
-    #
-    #          probas_left  probas_right
-    #  class 0     ...          ...
-    #  class 1     ...          ...
-    #  class 2     ...          ...
-    probas_left = np.bincount(left, minlength=n_classes)/len(left)
-    probas_right = np.bincount(
-        right, minlength=n_classes)/len(right)
-    probas = np.vstack([probas_left, probas_right]).T
+def calculate_criterion(criterion, left, right, n_classes):
 
-    # sum across the classes ie axis 0
-    gini = np.sum(probas * (1-probas), axis=0)
+    if criterion == "gini":
+        # `probas`:
+        #
+        #          probas_left  probas_right
+        #  class 0     ...          ...
+        #  class 1     ...          ...
+        #  class 2     ...          ...
+        probas_left = np.bincount(left, minlength=n_classes)/len(left)
+        probas_right = np.bincount(
+            right, minlength=n_classes)/len(right)
+        probas = np.vstack([probas_left, probas_right]).T
 
-    return gini
+        # sum across the classes ie axis 0
+        gini = np.sum(probas * (1-probas), axis=0)
 
+        return gini
+    else:
+        sse_left = ((left-left.mean())**2).sum(keepdims=True)
+        sse_right = ((right-right.mean())**2).sum(keepdims=True)
+        sse = sse_left + sse_right
 
-def calculate_criterion_2(left, right):
-    sse_left = ((left-left.mean())**2).sum(keepdims=True)
-    sse_right = ((right-right.mean())**2).sum(keepdims=True)
-    sse = sse_left + sse_right
-
-    return sse
-
-
-def calculate_criterion_initial(y):
-    proportion = np.bincount(y)/len(y)
-    gini_initial = np.sum(proportion*(1-proportion))
-    return gini_initial
+        return sse
 
 
-def calculate_criterion_initial_2(y):
-    return np.mean(y)
+def calculate_criterion_initial(criterion, y):
+
+    if criterion == "gini":
+        proportion = np.bincount(y)/len(y)
+        gini_initial = np.sum(proportion*(1-proportion))
+        return gini_initial
+    else:
+        return np.mean(y)
 
 
 def gen(a, b):
