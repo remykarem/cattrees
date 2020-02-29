@@ -2,19 +2,6 @@ import warnings
 import numpy as np
 from .utils import *
 from .exceptions import NotEvaluatedError, NotSupposedToHappenError
-import ipdb
-
-
-class ClassificationTreeNode(TreeNode):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.criteria = "gini"
-
-
-class RegressionTreeNode(TreeNode):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.criteria = "mse"
 
 
 class TreeNode:
@@ -35,20 +22,20 @@ class TreeNode:
     """
 
     def __init__(self,
-                 data=None, categorical_features=[2]],
-                 idx = None,
-                 depth = None):
-        self.data=gen(*data)
-        self.idx=idx
-        self.depth=depth
-        self.categorical_features=categorical_features
-        self.qn=None
-        self.col=None
-        self.pred=None
-        self.left=None
-        self.right=None
-        self.criteria=None
-        self.evaluated=False
+                 data=None, categorical_features=[2],
+                 idx=None,
+                 depth=None):
+        self.data = gen(*data)
+        self.idx = idx
+        self.depth = depth
+        self.categorical_features = categorical_features
+        self.qn = None
+        self.col = None
+        self.pred = None
+        self.left = None
+        self.right = None
+        self.criteria = None
+        self.evaluated = False
 
     def split(self, max_depth, features_to_select, splits_to_select):
         """
@@ -65,43 +52,44 @@ class TreeNode:
         right_data: ndarray
             Feature
         """
+        # import ipdb; ipdb.set_trace()
         # 1. Get the features and the targets
-        features, y=next(self.data)
+        features, y = next(self.data)
         if features.ndim == 1:
-            features=features[:, None]
+            features = features[:, None]
 
         # 2. Check conditions to not split.
         # Terminal nodes must provide prediction value.
         if len(np.unique(y)) == 1:
-            self.pred=np.unique(y)[0]
-            self.evaluated=True
+            self.pred = np.unique(y)[0]
+            self.evaluated = True
             return None, None
         elif self.depth == max_depth:
-            self.pred=np.argmax(np.bincount(
+            self.pred = np.argmax(np.bincount(
                 y)) if self.criteria == "gini" else np.mean(y)
-            self.evaluated=True
+            self.evaluated = True
             return None, None
         elif self.depth > max_depth:
             raise NotSupposedToHappenError
 
         # 3. Prepare features to loop through.
-        feature_indices_to_select=select_features(n_features = features.shape[1],
-                                                    method = features_to_select)
+        feature_indices_to_select = select_features(n_features=features.shape[1],
+                                                    method=features_to_select)
 
         # 4. For categorical features, we want to perform a one-time
         # calculation of the no. of classes. This will be used later
         # when calculating the gini coefficient.
-        n_classes=np.max(y)+1 if self.criteria == "gini" else None
+        n_classes = np.max(y)+1 if self.criteria == "gini" else None
 
         # 5. Prepare arrays to store criteria and thresholds
         # from looping through features and thresholds.
         # xxx means 'category' (categorical) or 'split' (numerical).
-        best_xxx_from_every_feature=[0]*features.shape[1]
-        best_gain_from_every_feature=[0]*features.shape[1]
+        best_xxx_from_every_feature = [0]*features.shape[1]
+        best_gain_from_every_feature = [0]*features.shape[1]
 
         # 6. Before looping through to get criteria, find the dataset's
         # initial criterion.
-        criterion_initial=calculate_criterion_initial(self.criteria, y)
+        criterion_initial = calculate_criterion_initial(self.criteria, y)
         print(f"Criterion initial: {criterion_initial}")
 
         # 7. Loop through every feature and threshold
@@ -208,7 +196,7 @@ class TreeNode:
         # 8. If there are no useful splits, make this node a terminal
         if np.max(best_gain_from_every_feature) < 0.05:
             self.pred = np.argmax(np.bincount(
-                y)) if criteria == "gini" else np.mean(y)
+                y)) if self.criteria == "gini" else np.mean(y)
             self.evaluated = True
             return None, None
 
@@ -236,15 +224,15 @@ class TreeNode:
         return left_X_y, right_X_y
 
         def __call__(self, X):
-        """Calls a node recursively until it hits a prediction"""
-        if self.pred is not None:
-            return self.pred
-        elif self.col in self.categorical_features and X[:, self.col] == self.qn:
-            return self.left(X)
-        elif self.col not in self.categorical_features and X[:, self.col] <= self.qn:
-            return self.left(X)
-        else:
-            return self.right(X)
+            """Calls a node recursively until it hits a prediction"""
+            if self.pred is not None:
+                return self.pred
+            elif self.col in self.categorical_features and X[:, self.col] == self.qn:
+                return self.left(X)
+            elif self.col not in self.categorical_features and X[:, self.col] <= self.qn:
+                return self.left(X)
+            else:
+                return self.right(X)
 
     def __repr__(self):
         if not self.evaluated:
@@ -321,6 +309,18 @@ class TreeNode:
             return "-"
         else:
             return self.pred
+
+
+class ClassificationTreeNode(TreeNode):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.criteria = "gini"
+
+
+class RegressionTreeNode(TreeNode):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.criteria = "mse"
 
 
 class Stack:
