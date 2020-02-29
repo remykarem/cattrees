@@ -1,8 +1,7 @@
 import numpy as np
 
 __all__ = ["select_features", "select_split_indices", "calculate_criterion",
-           "calculate_criterion_2", "calculate_criterion_initial",
-           "calculate_criterion_initial_2", "gen"]
+           "calculate_criterion_initial", "gen"]
 
 
 def select_features(n_features, method="all"):
