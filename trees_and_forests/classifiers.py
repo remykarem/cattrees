@@ -1,7 +1,6 @@
 import numpy as np
 from .tree import plant_tree
 from .data_structures import ClassificationTreeNode
-import ipdb
 
 X = np.array([
     [1, 101, 103, 3, 5, 107, 109, 7, 8],
@@ -27,7 +26,7 @@ class DecisionTreeClassifier:
             y=y,
             categorical=categorical,
             max_depth=self.max_depth,
-            features_to_select=self.features_to_select
+            features_to_select=self.features_to_select,
             splits_to_select=self.splits_to_select)
 
     def predict(self, X):
@@ -64,6 +63,28 @@ class RandomForestClassifier:
         preds = np.array([tree(X) for tree in self.trees])
         max_voting = np.argmax(np.bincount(preds))
         return max_voting
+
+
+class BaggingClassifier:
+    def __init__(self):
+        pass
+
+    def fit(self):
+        pass
+
+    def predict(self):
+        pass
+
+
+class ExtRaTreesClassifier:
+    def __init__(self):
+        pass
+
+    def fit(self):
+        pass
+
+    def predict(self):
+        pass
 
 
 def get_bootstrap_sample_indices(n_rows):
