@@ -1,24 +1,27 @@
-import numpy as np
 from .tree import plant_tree
 from .data_structures import RegressionTreeNode
-import ipdb
 
 __all__ = ["DecisionTreeRegressor"]
 
-X = np.array([
-    [1, 101, 103, 3, 5, 107, 109, 7, 8],
-    [1, 101, 103, 3, 5, 107, 109, 7, 8],
-    [0,   0,   0, 0, 0,   0,   0, 1, 1]]).T
-y = np.array([13, 30, 22, 31, 16, 19, 18, 27, 15])
-
 
 class DecisionTreeRegressor:
-    def __init__(self):
+    def __init__(self,
+                 max_depth=3,
+                 features_to_select="all",
+                 splits_to_select="all"):
         self.tree = None
+        self.max_depth = max_depth
+        self.splits_to_select = splits_to_select
+        self.features_to_select = features_to_select
 
     def fit(self, X, y, categorical=[2]):
         """Build a decision tree to fit X and y"""
-        self.tree = plant_tree(RegressionTreeNode, X, y)
+        self.tree = plant_tree(
+            Node=RegressionTreeNode,
+            X=X, y=y, categorical=categorical,
+            max_depth=self.max_depth,
+            features_to_select=self.features_to_select,
+            splits_to_select=self.splits_to_select)
 
     def predict(self, X):
         return self.tree(X)
