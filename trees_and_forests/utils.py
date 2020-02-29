@@ -55,7 +55,7 @@ def calculate_criterion_initial(criterion, y):
         gini_initial = np.sum(proportion*(1-proportion))
         return gini_initial
     else:
-        return np.mean(y)
+        return y.var()
 
 
 def gen(a, b):
