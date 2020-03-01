@@ -1,3 +1,4 @@
+import numpy as np
 from .data_structures import Stack
 
 
@@ -54,3 +55,10 @@ def plant_tree(Node, X, y, categorical,
             stack.push(node_left, node_right)
 
     return root
+
+
+def plant_tree_average(Node, y):
+    node = Node(data=(0,0), idx=0, depth=0)
+    node.pred = np.mean(y)
+    node.evaluated = True
+    return node
