@@ -22,7 +22,7 @@ class TreeNode:
     """
 
     def __init__(self,
-                 data=None, categorical_features=[2],
+                 data=None, categorical_features=None,
                  idx=None,
                  depth=None):
         self.data = gen(*data)
@@ -52,7 +52,6 @@ class TreeNode:
         right_data: ndarray
             Feature
         """
-        # import ipdb; ipdb.set_trace()
         # 1. Get the features and the targets
         features, y = next(self.data)
         if features.ndim == 1:
@@ -78,8 +77,11 @@ class TreeNode:
 
         # 4. For categorical features, we want to perform a one-time
         # calculation of the no. of classes. This will be used later
-        # when calculating the gini coefficient.
+        # when calculating the gini coefficient. Also, set it to empty
+        # list if there're no categorical features.
         n_classes = np.max(y)+1 if self.criteria == "gini" else None
+        if self.categorical_features is None:
+            self.categorical_features = []
 
         # 5. Prepare arrays to store criteria and thresholds
         # from looping through features and thresholds.
@@ -223,16 +225,18 @@ class TreeNode:
 
         return left_X_y, right_X_y
 
-        def __call__(self, X):
-            """Calls a node recursively until it hits a prediction"""
-            if self.pred is not None:
-                return self.pred
-            elif self.col in self.categorical_features and X[:, self.col] == self.qn:
-                return self.left(X)
-            elif self.col not in self.categorical_features and X[:, self.col] <= self.qn:
-                return self.left(X)
-            else:
-                return self.right(X)
+    def __call__(self, x):
+        """Calls a node recursively until it hits a prediction"""
+        if x.ndim != 1:
+            raise ValueError("x must be dim 1")
+        if self.pred is not None:
+            return self.pred
+        elif self.col in self.categorical_features and x[self.col] == self.qn:
+            return self.left(x)
+        elif self.col not in self.categorical_features and x[self.col] <= self.qn:
+            return self.left(x)
+        else:
+            return self.right(x)
 
     def __repr__(self):
         if not self.evaluated:
@@ -272,7 +276,7 @@ class TreeNode:
         if self.qn is None:
             return ""
         else:
-            return f"Is X <= {self.qn}?"
+            return f"Is X[:,{self.col}] <= {self.qn}?"
 
     @property
     def _left(self):
@@ -321,6 +325,9 @@ class RegressionTreeNode(TreeNode):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.criteria = "mse"
+
+    def __repr__(self):
+        return super().__repr__()
 
 
 class Stack:
