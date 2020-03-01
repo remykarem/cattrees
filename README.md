@@ -1,4 +1,4 @@
-# Trees and forests from scratch
+# Trees, averaging trees and boosted trees from scratch
 
 ## 1. Usage
 
