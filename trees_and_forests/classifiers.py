@@ -86,8 +86,36 @@ class ExtRaTreesClassifier:
     def predict(self):
         pass
 
+class GradientBoostingClassifier:
+    def __init__(self, n_trees, max_depth=1,
+                 features_to_select="all",
+                 splits_to_select="all"):
+        self.alpha = 0.1
+        self.n_trees = n_trees
+        self.tree_boosted = None
+        self.max_depth = max_depth
+        self.splits_to_select = splits_to_select
+        self.features_to_select = features_to_select
 
-def get_bootstrap_sample_indices(n_rows):
-    PROPORTION = 2/3
-    final_size = min(1, int(PROPORTION*n_rows))
+    def fit(self, X, y):
+        tree = plant_tree_average(ClassificationTreeNode, y)
+        y_new = y
+        for _ in range(2):
+            y_now = np.array([tree(x) for x in X])
+            y_new = y_now + self.alpha * (y_new - y_now)
+            tree = plant_tree(
+                Node=ClassificationTreeNode,
+                X=X, y=y_new, categorical=[2],
+                max_depth=self.max_depth,
+                features_to_select=self.features_to_select,
+                splits_to_select=self.splits_to_select)
+        self.tree_boosted = tree
+
+    def predict(self, X):
+        return np.array([self.tree_boosted(x) for x in X])
+
+
+
+def get_bootstrap_sample_indices(n_rows, proportion=2/3):
+    final_size = min(1, int(proportion*n_rows))
     return np.random.choice(n_rows, size=final_size, replace=True)
