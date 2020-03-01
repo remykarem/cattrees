@@ -13,7 +13,7 @@ def select_features(n_features, method="all"):
 
 
 def select_split_indices(n_unique_samples, method):
-    all_split_indices = range(1, n_unique_samples-1)
+    all_split_indices = range(1, n_unique_samples)
     if method == "all":
         return all_split_indices
     elif method == "random":
@@ -41,10 +41,10 @@ def calculate_criterion(criterion, left, right, n_classes):
 
         return gini
     else:
-        sse_left = ((left-left.mean())**2).sum(keepdims=True)
-        sse_right = ((right-right.mean())**2).sum(keepdims=True)
+        # TODO check if this is right
+        sse_left = left.var(keepdims=True)
+        sse_right = right.var(keepdims=True)
         sse = sse_left + sse_right
-
         return sse
 
 
