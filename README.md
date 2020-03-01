@@ -34,15 +34,32 @@ Inference
 
 ## 2. Would-like-to-do-but-not-sure-when's
 
-- [ ] Cythonise/PyTorchify
+Algorithms
+
+- [X] Decision tree classifier
+- [X] Decision tree regressor
+- [ ] Simple bagging
+- [X] Random forest
+- [ ] Extemely randomised trees
+- [ ] AdaBoost
+- [X] Gradient boosting classifier
+
+Software development
+
 - [ ] Unit tests
-- [ ] Boosted trees 😍
-- [ ] Performance against scikit-learn
 - [ ] API design document
-- [ ] Visualisation
-- [ ] Notebook for walkthrough at every decision
-- [ ] Probabilities
+- [ ] Tutorial
+
+Optimisations
+
+- [ ] Cythonise/PyTorchify
+- [ ] Performance against scikit-learn
 
 ## 3. Related
 
 https://scikit-learn.org/stable/modules/tree.html
+
+## 4. Resources
+
+http://www.ccs.neu.edu/home/vip/teach/MLcourse/4_boosting/slides/gradient_boosting.pdf
+https://scikit-learn.org
