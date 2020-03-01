@@ -41,8 +41,8 @@ Algorithms
 - [ ] Simple bagging
 - [X] Random forest
 - [ ] Extemely randomised trees
-- [ ] AdaBoost
-- [X] Gradient boosting classifier
+- [X] AdaBoost
+- [X] Gradient boosting
 
 Software development
 
