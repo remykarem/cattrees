@@ -100,3 +100,70 @@ class GradientBoostingRegressor:
     def predict(self, X):
         return np.array([self.tree_boosted(x) for x in X])
 
+
+class AdaBoostRegressor:
+    def __init__(self, n_trees, max_depth=1,
+                 features_to_select="all",
+                 splits_to_select="all"):
+        self.alpha = 0.1
+        self.n_trees = n_trees
+        self.max_depth = max_depth
+        self.splits_to_select = splits_to_select
+        self.features_to_select = features_to_select
+        self.trees = None
+        self.says = None
+
+    def fit(self, X, y):
+
+        # 0. Initialise weights to be 1/n_rows, prepare a list of say
+        n_rows = X.shape[0]
+        row_indices = np.arange(n_rows)
+        weights = np.ones(shape=(n_rows, 1))/n_rows
+        trees = []
+        says = []  # amount of say for each tree
+
+        for _ in range(self.n_trees):
+
+            # 1. Retrieve bootstrap samples by sampling from a categorical
+            # distribution with `weights` as the probabilities.
+            # Once done, reset the weights
+            rows_to_select = np.random.choice(row_indices, size=n_rows, p=weights.T)
+            _X = X[rows_to_select]
+            weights = np.ones(shape=(n_rows, 1))/n_rows
+
+            # 2. Plant a tree
+            tree = plant_tree(
+                Node=RegressionTreeNode,
+                X=_X, y=y_new, categorical=[2],
+                max_depth=2,
+                features_to_select=self.features_to_select,
+                splits_to_select=self.splits_to_select)
+
+            # 3. Calculate tree's final say during aggregation
+            #    a) Calculate predictions
+            #    b) Calculate error rate
+            #    c) Calculate current tree's say
+            # TODO check if correct
+            y_pred = np.array([tree(x) for x in _X])
+            mask_for_errors = y_pred != y
+            error_rate = sum(mask_for_errors) / len(y)
+            say = 0.5 * np.log((1-error_rate)/error_rate)
+
+            # 4. Update the weights of the datapoints.
+            # Datapoints correctly predicted do not need to be updated.
+            exponent = say * mask_for_errors[:, None]
+            weights = weights * np.exp(exponent)
+
+            # 5. Normalise weights
+            weights = weights / weights.sum()
+
+            trees.append(tree)
+            says.append(say)
+
+        self.trees = trees
+        self.says = np.array(says)
+
+    def predict(self, X):
+        preds = np.array([self.boosted_trees(x) for x in X])
+        weighted_pred = (preds * says).sum()
+        return weighted_preds

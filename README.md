@@ -1,4 +1,4 @@
-# Trees, averaging trees and boosted trees from scratch
+# [WIP] Trees, averaging trees and boosted trees from scratch
 
 ## 1. Usage
 
@@ -40,8 +40,8 @@ Algorithms
 - [X] Decision tree regressor
 - [ ] Simple bagging
 - [X] Random forest
-- [ ] Extemely randomised trees
-- [X] AdaBoost
+- [ ] Extremely randomised trees
+- [ ] AdaBoost
 - [X] Gradient boosting
 
 Software development

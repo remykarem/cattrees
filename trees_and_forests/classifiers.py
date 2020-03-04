@@ -121,7 +121,7 @@ def get_bootstrap_sample_indices(n_rows, proportion=2/3):
     return np.random.choice(n_rows, size=final_size, replace=True)
 
 
-class AdaBoostRegressor:
+class AdaBoostClassifier:
     def __init__(self, n_trees, max_depth=1,
                  features_to_select="all",
                  splits_to_select="all"):
