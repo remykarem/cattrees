@@ -72,8 +72,8 @@ class TreeNode:
             raise NotSupposedToHappenError
 
         # 3. Prepare features to loop through.
-        feature_indices_to_select = select_features(n_features=features.shape[1],
-                                                    method=features_to_select)
+        feature_indices_to_select = select_features(
+            n_features=features.shape[1], method=features_to_select)
 
         # 4. For categorical features, we want to perform a one-time
         # calculation of the no. of classes. This will be used later
